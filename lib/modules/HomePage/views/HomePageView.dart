@@ -7,7 +7,6 @@ import 'package:fuelsapp/modules/CardPage/views/CardPageView.dart';
 import 'package:fuelsapp/modules/History/views/HistoryPage.dart';
 import 'package:fuelsapp/modules/HomePage/controller/QRController.dart';
 import 'package:fuelsapp/modules/HomePage/model/QrPaymentStatusResponse.dart';
-import 'package:fuelsapp/modules/HomePage/model/WalletResponseModel.dart';
 import 'package:fuelsapp/modules/ProfilePage/views/ProfilePageView.dart';
 import 'package:fuelsapp/modules/Settings/views/SettingsView.dart';
 import 'package:fuelsapp/utils/AnimationUtil.dart';

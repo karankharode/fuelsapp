@@ -7,6 +7,7 @@ import 'package:fuelsapp/utils/ColorUtil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as location;
 import 'package:location/location.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../Stations/controller/StationListController.dart';
 import '../../Stations/models/StationListResponse.dart';
 import 'dart:ui' as ui;
@@ -34,6 +35,13 @@ class _MapPageViewState extends State<MapPageView> {
   bool firstZoom = true;
   final LatLng _initialcameraposition = const LatLng(20.5937, 78.9629);
   ColorUtil colorUtil = ColorUtil();
+  List filterList = [
+    {
+      "name": "Car Wash",
+      "image": "assets/images/Car Wash@3x.png",
+      "selected": false,
+    }
+  ];
   String mapStyle = '''[
     {
       "elementType": "geometry",
@@ -127,7 +135,7 @@ class _MapPageViewState extends State<MapPageView> {
     stationListResponse = await StationListController().getStationList();
 
     setState(() {
-      //debugPrint(stationListResponse.stationList.toString());
+      // debugPrint(stationListResponse.stationList.toString());
       stationListLoaded = true;
     });
     mapBitmapsToMarkers(stationListResponse.stationList);
@@ -277,31 +285,34 @@ class _MapPageViewState extends State<MapPageView> {
                       Container(
                         height: 60,
                         child: ListView.builder(
-                          itemCount: 4,
+                          itemCount: filterList.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Color(0xffFFEFEE),
-                                border: Border.all(color: Color(0xffFFDAD8), width: 1),
+                            return GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Color(0xffFFEFEE),
+                                  border: Border.all(color: Color(0xffFFDAD8), width: 1),
+                                ),
+                                margin: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Row(children: [
+                                  Image.asset(filterList[index]['image']),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(filterList[index]['name'],
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xff3C3C3C))),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                ]),
                               ),
-                              margin: const EdgeInsets.all(8.0),
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Row(children: [
-                                Image.asset('assets/images/Car Wash@3x.png'),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Car Wash",
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xff3C3C3C))),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                              ]),
                             );
                           },
                         ),
@@ -412,6 +423,13 @@ class _MapPageViewState extends State<MapPageView> {
         ),
       ));
     } on Exception {}
+  }
+
+  void _launchMapsUrl(String lat, String long) async {
+    final query = '$lat,$long(Power Station)';
+    final uri = Uri(scheme: 'geo', host: '0,0', queryParameters: {'q': query});
+
+    await launchUrl(uri);
   }
 
   @override
@@ -580,40 +598,32 @@ class _MapPageViewState extends State<MapPageView> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Row(
-                                          children: [
-                                            Image.asset('assets/images/car service@3x.png',
-                                                height: 24, width: 24),
-                                            Image.asset('assets/images/Car Transfer@3x.png',
-                                                height: 24, width: 24),
-                                            Image.asset('assets/images/Car Washing@3x.png',
-                                                height: 24, width: 24),
-                                            Text(
-                                              "+3 More",
-                                              style: TextStyle(
-                                                  fontSize: 14, fontWeight: FontWeight.bold),
-                                            )
-                                          ],
-                                        ),
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(50),
-                                              color: colorUtil.primaryRed),
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
-                                            child: Row(
-                                              children: [
-                                                Image.asset('assets/images/Navigate@3x.png',
-                                                    height: 22, width: 22),
-                                                SizedBox(
-                                                  width: 6,
-                                                ),
-                                                Text("Navigate",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w600,
-                                                        color: colorUtil.white)),
-                                              ],
+                                        getServicesWidget(selectedStationModel),
+                                        GestureDetector(
+                                          onTap: () {
+                                            _launchMapsUrl(selectedStationModel.latitude,
+                                                selectedStationModel.longitude);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(50),
+                                                color: colorUtil.primaryRed),
+                                            child: Padding(
+                                              padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                                              child: Row(
+                                                children: [
+                                                  Image.asset('assets/images/Navigate@3x.png',
+                                                      height: 22, width: 22),
+                                                  SizedBox(
+                                                    width: 6,
+                                                  ),
+                                                  Text("Navigate",
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w600,
+                                                          color: colorUtil.white)),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -630,6 +640,42 @@ class _MapPageViewState extends State<MapPageView> {
           ],
         ),
       ),
+    );
+  }
+
+  Row getServicesWidget(StationModel selectedStationModel) {
+    int servicesCount = 0;
+    List<Widget> servicesWidget = [];
+    if (selectedStationModel.carWash != "null" && selectedStationModel.carWash == "true") {
+      servicesCount++;
+      servicesWidget.add(Image.asset('assets/images/Car Washing@3x.png', height: 24, width: 24));
+    }
+    // if (selectedStationModel.cstore != "null" && selectedStationModel.cstore == "true") {
+    //   servicesCount++;
+    //   servicesWidget.add(Image.asset('assets/images/car service@3x.png', height: 24, width: 24));
+    // }
+    if (selectedStationModel.atm != "null" && selectedStationModel.atm == "true") {
+      servicesCount++;
+      servicesWidget.add(Image.asset('assets/images/car service@3x.png', height: 24, width: 24));
+    }
+    // if (selectedStationModel.fuelM98 != "null" && selectedStationModel.fuelM98 == "true") {
+    //   servicesCount++;
+    //   servicesWidget.add(Image.asset('assets/images/Car Transfer@3x.png', height: 24, width: 24));
+    // }
+    if (selectedStationModel.repairWorkshop != "null" &&
+        selectedStationModel.repairWorkshop == "true") {
+      servicesCount++;
+      servicesWidget.add(Image.asset('assets/images/Car Transfer@3x.png', height: 24, width: 24));
+    }
+    return Row(
+      children: [
+        ...servicesWidget,
+        (servicesCount > 3)
+            ? Text("+${servicesCount - 3} More",
+                style: TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w600, color: ColorUtil().primaryRed))
+            : Container()
+      ],
     );
   }
 }

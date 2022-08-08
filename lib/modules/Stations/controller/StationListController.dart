@@ -22,7 +22,7 @@ class StationListController {
       'Authorization': 'Bearer $accessTokenGlobal',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('GET', Uri.parse('$baseUrl/api/v1/station/list?page=0&size=10'));
+    var request = http.Request('GET', Uri.parse('$baseUrl/api/v1/station/list?page=0&size=15'));
 
     request.headers.addAll(headers);
 
@@ -35,7 +35,7 @@ class StationListController {
       String responseStream = await response.stream.bytesToString();
 
       var data = jsonDecode(responseStream);
-      // //debugPrint("Station List : " + data.toString());
+      debugPrint("Station List : " + data.toString());
 
       StationListResponse stationListResponse = StationListResponse.fromResponse(data['content']);
 

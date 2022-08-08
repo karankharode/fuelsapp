@@ -8,6 +8,7 @@ import 'package:fuelsapp/utils/ThemeUtil.dart';
 import '../../../utils/common.dart';
 import '../../Auth/Login/controller/LoginController.dart';
 import '../../HomePage/controller/QRController.dart';
+import '../../MapPage/views/MapPageView.dart';
 
 late CardListResponse cardListResponse;
 late LoginResponse loginResponse;
@@ -397,37 +398,37 @@ class AppBarWidget extends StatelessWidget {
             ),
             Row(
               children: [
-                // InkWell(
-                //   onTap: () {
-                //     // Navigator.push(
-                //     //     context,
-                //     //     PageRouteBuilder(
-                //     //       pageBuilder: (context, animation, secondaryAnimation) =>
-                //     //           const MapPageView(),
-                //     //       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                //     //         return child;
-                //     //       },
-                //     //     ));
-                //   },
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //         shape: BoxShape.circle,
-                //         gradient: LinearGradient(
-                //             begin: Alignment.topLeft,
-                //             end: Alignment.bottomRight,
-                //             colors: [
-                //               const Color(0xff000000).withOpacity(0.05),
-                //               const Color(0xff000000).withOpacity(0.05),
-                //             ])),
-                //     padding: const EdgeInsets.all(12),
-                //     child: Image.asset(
-                //       "assets/images/Location3@3x.png",
-                //       color: Colors.black,
-                //       height: 25,
-                //       width: 25,
-                //     ),
-                //   ),
-                // ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation, secondaryAnimation) =>
+                              const MapPageView(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            return child;
+                          },
+                        ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              const Color(0xff000000).withOpacity(0.05),
+                              const Color(0xff000000).withOpacity(0.05),
+                            ])),
+                    padding: const EdgeInsets.all(12),
+                    child: Image.asset(
+                      "assets/images/Location3@3x.png",
+                      color: Colors.black,
+                      height: 25,
+                      width: 25,
+                    ),
+                  ),
+                ),
 
                 const SizedBox(
                   width: 15,
